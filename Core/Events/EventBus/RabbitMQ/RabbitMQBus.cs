@@ -1,5 +1,6 @@
 ﻿using Core.Events.EventHandler;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -7,10 +8,11 @@ using System.Text;
 
 namespace Core.Events.EventBus.RabbitMQ;
 
-public sealed class RabbitMQBus(IServiceScopeFactory serviceScopeFactory, RabbitMQConfig rabbitMqConfig) : IEventBus
+public sealed class RabbitMQBus(IServiceScopeFactory serviceScopeFactory, IOptions<RabbitMQConfig> rabbitMqConfigOptions) : IEventBus
 {
     private readonly Dictionary<string, List<Type>> _handlers = new();
     private readonly List<Type> _eventTypes = new();
+    private readonly RabbitMQConfig rabbitMqConfig = rabbitMqConfigOptions.Value;
 
     public void Publish<T>(T @event) where T : BaseEvent
     {
