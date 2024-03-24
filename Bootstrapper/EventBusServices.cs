@@ -12,12 +12,7 @@ public static class EventBusServices
     public static IServiceCollection RegisterEventBusServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<RabbitMQConfig>(configuration.GetSection(nameof(RabbitMQConfig)));
-        services.AddSingleton<IEventBus, RabbitMQBus>(sp =>
-        {
-            var scopeFactory = sp.GetRequiredService<IServiceScopeFactory>();
-            return new RabbitMQBus(scopeFactory, configuration.GetValue<RabbitMQConfig>(nameof(RabbitMQConfig))!);
-        });
-
+        services.AddSingleton<IEventBus, RabbitMQBus>();
         return services;
     }
 
