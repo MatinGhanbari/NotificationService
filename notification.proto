@@ -1,0 +1,16 @@
+syntax="proto3";
+package NotificationGrpc;
+import "google/protobuf/timestamp.proto";
+
+message NotificationRequest{
+}
+
+message NotificationResponse{
+	string title=1;
+	string description=2;
+	google.protobuf.Timestamp timestamp=3;
+}
+
+service NotificationGrpcService{
+	rpc GetNotifications(NotificationRequest) returns (stream NotificationResponse);
+}
