@@ -1,4 +1,5 @@
-﻿using Core.Events.EventHandler;
+﻿using System.Security.Authentication;
+using Core.Events.EventHandler;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -62,11 +63,28 @@ public sealed class RabbitMQBus(IServiceScopeFactory serviceScopeFactory, IOptio
             HostName = rabbitMqConfig.Host,
             Port = rabbitMqConfig.Port,
             UserName = rabbitMqConfig.Username,
-            Password = rabbitMqConfig.Password
+            Password = rabbitMqConfig.Password,
+            AmqpUriSslProtocols = SslProtocols.None
         };
 
-        var connection = factory.CreateConnection();
-        var channel = connection.CreateModel();
+        var connection = default(IConnection);
+        var isConnected = false;
+
+        while (!isConnected)
+        {
+            try
+            {
+                connection = factory.CreateConnection();
+                isConnected = true;
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception.Message);
+                Thread.Sleep(1000);
+            }
+        }
+
+        var channel = connection?.CreateModel();
 
         var eventName = typeof(T).Name;
         channel.QueueDeclare(eventName, true, false, false, null);
