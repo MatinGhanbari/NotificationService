@@ -1,0 +1,25 @@
+version: '3.4'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    environment:
+      - RABBITMQ_USER="guest"
+      - RABBITMQ_PASSWORD="guest"
+    volumes:
+      - /var/lib/rabbitmq
+    ports:
+      - '15672:15672'
+      - '5672:5672'
+    restart: always 
+
+  server:
+    image: ${DOCKER_REGISTRY-}server
+    build:
+      context: .
+      dockerfile: Server/Dockerfile
+    ports:
+      - '8080:8080'
+      - '8081:8081'
+    depends_on: 
+      - rabbitmq
