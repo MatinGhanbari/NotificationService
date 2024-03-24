@@ -25,10 +25,23 @@ $ docker-compose up --build
 
 ## How to use
 
-GRPC URL:
-```grpc://localhost:8081```
+GRPC URL: ```grpc://localhost:8081```
 
 Proto: [NotificationProto](notification.proto)
+
+After connecting to grpc you can publish events in rabbitmq bus and see results.
+
+### RabbitMQ
+RabbitMQ dashboard: http://localhost:15672/
+
+### Test Notification Event
+```json
+{
+"Title": "Hello World!",
+"Description": "This message is from MatinGhanbari",
+"DateTime": "2022-10-07T15:30:45.1234567Z",
+}
+```
     
 ## License
 
